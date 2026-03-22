@@ -4,7 +4,7 @@ import Controls from "./components/Controls";
 import Charts from "./components/Charts";
 import NetworkGraph from "./components/NetworkGraph";
 
-const API_BASE = "http://127.0.0.1:8000";
+const API_BASE = "https://mbann-backend.onrender.com";
 
 function App() {
   const [product, setProduct] = useState("");
