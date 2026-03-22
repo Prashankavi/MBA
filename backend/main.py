@@ -101,7 +101,7 @@ def build_rules_once():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    load_transactions() 
+    load_transactions()
     build_rules_once()
     yield
 
@@ -153,14 +153,11 @@ def recommend(
     order: str = "desc",
 ):
     if rules_df.empty:
-        build_rules_once()
-    
-        if rules_df.empty:
-            return {
-                "input_product": product,
-                "recommendations": [],
-                "message": "Rules are not available.",
-            }
+        return {
+            "input_product": product,
+            "recommendations": [],
+            "message": "Rules are not available.",
+        }
 
     product = product.strip()
     product_lower = product.lower()
@@ -253,12 +250,6 @@ def rules_visualization(
     min_lift: float = 0.8,
     min_support: float = 0.001,
 ):
-    global rules_df
-
-    # ✅ BUILD RULES IF EMPTY
-    if rules_df.empty:
-        build_rules_once()
-
     if rules_df.empty:
         return {"rules": []}
 
