@@ -252,6 +252,12 @@ def rules_visualization(
     min_lift: float = 0.8,
     min_support: float = 0.001,
 ):
+    global rules_df
+
+    # ✅ BUILD RULES IF EMPTY
+    if rules_df.empty:
+        build_rules_once()
+
     if rules_df.empty:
         return {"rules": []}
 
@@ -270,6 +276,7 @@ def rules_visualization(
         })
 
     return {"rules": result}
+
 import os
 
 if __name__ == "__main__":
