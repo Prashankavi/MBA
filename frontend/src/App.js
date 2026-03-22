@@ -46,41 +46,46 @@ function App() {
       .catch(() => setSuggestions([]));
   }, [product]);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (!product.trim()) {
+useEffect(() => {
+  const timer = setTimeout(() => {
+
+    // ✅ ALWAYS fetch rules (for charts)
+    const rulesUrl = `${API_BASE}/rules-visualization?min_confidence=${minConfidence}&min_lift=${minLift}&min_support=${minSupport}`;
+    fetch(rulesUrl)
+      .then((res) => res.json())
+      .then((data) => setRules(data.rules || []))
+      .catch(() => {});
+
+    // ❌ Only skip recommendations if no product
+    if (!product.trim()) {
+      setRecommendations([]);
+      setMessage("");
+      return;
+    }
+
+    // ✅ Recommendations API
+    const recommendUrl = `${API_BASE}/recommend?product=${encodeURIComponent(
+      product
+    )}&min_confidence=${minConfidence}&min_lift=${minLift}&min_support=${minSupport}&limit=${limit}&sort_by=${sortBy}&order=${order}`;
+
+    fetch(recommendUrl)
+      .then((res) => res.json())
+      .then((data) => {
+        setRecommendations(data.recommendations || []);
+        setMessage(data.message || "");
+        if (data.input_product) {
+          setProduct(data.input_product);
+        }
+      })
+      .catch(() => {
         setRecommendations([]);
-        setMessage("");
-        return;
-      }
+        setMessage("Error connecting to backend.");
+      });
 
-      const recommendUrl = `${API_BASE}/recommend?product=${encodeURIComponent(
-        product
-      )}&min_confidence=${minConfidence}&min_lift=${minLift}&min_support=${minSupport}&limit=${limit}&sort_by=${sortBy}&order=${order}`;
+  }, 300);
 
-      fetch(recommendUrl)
-        .then((res) => res.json())
-        .then((data) => {
-          setRecommendations(data.recommendations || []);
-          setMessage(data.message || "");
-          if (data.input_product) {
-            setProduct(data.input_product);
-          }
-        })
-        .catch(() => {
-          setRecommendations([]);
-          setMessage("Error connecting to backend.");
-        });
-
-      const rulesUrl = `${API_BASE}/rules-visualization?min_confidence=${minConfidence}&min_lift=${minLift}&min_support=${minSupport}`;
-      fetch(rulesUrl)
-        .then((res) => res.json())
-        .then((data) => setRules(data.rules || []))
-        .catch(() => {});
-    }, 300);
-
-    return () => clearTimeout(timer);
-  }, [product, minConfidence, minLift, minSupport, limit, sortBy, order]);
+  return () => clearTimeout(timer);
+}, [product, minConfidence, minLift, minSupport, limit, sortBy, order]);
 
   const handleClear = () => {
     setProduct("");
