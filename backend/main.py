@@ -21,7 +21,7 @@ def load_transactions():
     if not DATA_PATH.exists():
         raise FileNotFoundError(f"Dataset not found: {DATA_PATH}")
 
-    df = pd.read_csv(DATA_PATH)
+    df = pd.read_csv(DATA_PATH).head(2000)
     df.columns = [col.strip() for col in df.columns]
 
     required_cols = ["Member_number", "Date", "itemDescription"]
@@ -268,3 +268,9 @@ def rules_visualization(
         })
 
     return {"rules": result}
+import os
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 10000))
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=port)
