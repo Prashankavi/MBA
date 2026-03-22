@@ -102,6 +102,7 @@ def build_rules_once():
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     load_transactions() 
+    build_rules_once()
     yield
 
 
