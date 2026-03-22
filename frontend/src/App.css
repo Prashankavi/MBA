@@ -1,0 +1,281 @@
+.app-container {
+  min-height: 100vh;
+  padding: 30px;
+  background: linear-gradient(135deg, #0f172a, #1e293b, #111827);
+  color: white;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.hero-section {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.hero-section h1 {
+  font-size: 2.6rem;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+.hero-section p {
+  color: #cbd5e1;
+  font-size: 1rem;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  padding: 20px;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+.stat-card h3 {
+  font-size: 2rem;
+  margin: 0;
+}
+
+.stat-card p {
+  margin-top: 8px;
+  color: #cbd5e1;
+}
+
+.controls-card,
+.insight-card,
+.network-card,
+.chart-card {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 25px;
+  border-radius: 20px;
+  margin-bottom: 30px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+.controls-card h2,
+.insight-card h2 {
+  margin-top: 0;
+}
+
+.subtitle {
+  color: #cbd5e1;
+  margin-bottom: 20px;
+}
+
+.hint-text {
+  margin-top: 6px;
+  color: #cbd5e1;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.form-group input,
+.form-group select {
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  background: #f1f5f9;
+  color: #111827;
+}
+
+.filters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+}
+
+.button-row {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+button {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  background: #22c55e;
+  color: white;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  background: #16a34a;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.secondary-btn {
+  background: #475569;
+}
+
+.secondary-btn:hover {
+  background: #64748b;
+}
+
+.export-btn {
+  background: #0ea5e9;
+}
+
+.export-btn:hover {
+  background: #0284c7;
+}
+
+.quick-products {
+  margin-bottom: 20px;
+}
+
+.quick-products h3 {
+  margin-bottom: 12px;
+}
+
+.quick-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.chip-btn {
+  background: #334155;
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 0.9rem;
+}
+
+.chip-btn:hover {
+  background: #475569;
+}
+
+.results-section h2,
+.network-section h2,
+.charts-section h2 {
+  margin-bottom: 15px;
+}
+
+.results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.message-box {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 14px;
+  border-radius: 10px;
+  color: #f8fafc;
+}
+
+.recommendation-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.recommendation-card {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  padding: 20px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  transition: transform 0.25s ease;
+}
+
+.recommendation-card:hover {
+  transform: translateY(-6px);
+}
+
+.recommendation-card h3 {
+  margin-top: 0;
+  color: #86efac;
+}
+
+.metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 12px;
+  color: #cbd5e1;
+  font-size: 0.9rem;
+}
+
+.insight-card p {
+  color: #e2e8f0;
+  line-height: 1.7;
+}
+
+.network-section {
+  margin-top: 40px;
+}
+
+.network-card {
+  padding: 10px;
+}
+
+.charts-section {
+  margin-top: 40px;
+}
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 25px;
+}
+
+.chart-card h3 {
+  margin-bottom: 10px;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 10px;
+}
+
+@media (max-width: 768px) {
+  .hero-section h1 {
+    font-size: 2rem;
+  }
+
+  .filters-grid,
+  .stats-grid,
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .results-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
