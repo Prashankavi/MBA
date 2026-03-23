@@ -1,10 +1,10 @@
 from contextlib import asynccontextmanager
 from pathlib import Path
-
+import os
 import pandas as pd
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
-from mlxtend.frequent_patterns import apriori, association_rules
+from mlxtend.frequent_patterns import fpgrowth, association_rules
 from mlxtend.preprocessing import TransactionEncoder
 
 DATA_PATH = Path(__file__).parent / "groceries.csv"
@@ -21,7 +21,7 @@ def load_transactions():
     if not DATA_PATH.exists():
         raise FileNotFoundError(f"Dataset not found: {DATA_PATH}")
 
-    df = pd.read_csv(DATA_PATH).head(30000)
+    df = pd.read_csv(DATA_PATH)
     df.columns = [col.strip() for col in df.columns]
 
     required_cols = ["Member_number", "Date", "itemDescription"]
@@ -64,10 +64,12 @@ def build_rules_once():
     te_array = te.fit(transactions).transform(transactions)
     basket = pd.DataFrame(te_array, columns=te.columns_)
 
-    frequent_itemsets = apriori(
+    # ✅ FP-Growth instead of Apriori
+    frequent_itemsets = fpgrowth(
         basket,
-        min_support=0.001,
-        use_colnames=True
+        min_support=0.01,
+        use_colnames=True,
+        max_len=2
     )
 
     if frequent_itemsets.empty:
@@ -99,9 +101,10 @@ def build_rules_once():
     ).reset_index(drop=True)
 
 
+# ✅ NO heavy computation at startup
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    load_transactions() 
+    load_transactions()
     yield
 
 
@@ -151,13 +154,18 @@ def recommend(
     sort_by: str = "score",
     order: str = "desc",
 ):
+    global rules_df
+
+    # ✅ Lazy rule building
     if rules_df.empty:
         build_rules_once()
-        return {
-            "input_product": product,
-            "recommendations": [],
-            "message": "Rules are not available.",
-        }
+
+        if rules_df.empty:
+            return {
+                "input_product": product,
+                "recommendations": [],
+                "message": "Rules are not available.",
+            }
 
     product = product.strip()
     product_lower = product.lower()
@@ -173,7 +181,7 @@ def recommend(
         return {
             "input_product": product,
             "recommendations": [],
-            "message": "Product not found in dataset. Please choose from suggestions.",
+            "message": "Product not found in dataset.",
         }
 
     matched_rules = rules_df[
@@ -186,7 +194,7 @@ def recommend(
         return {
             "input_product": exact_match,
             "recommendations": [],
-            "message": "No recommendations found for this product.",
+            "message": "No recommendations found.",
         }
 
     matched_rules = matched_rules[
@@ -199,12 +207,8 @@ def recommend(
         return {
             "input_product": exact_match,
             "recommendations": [],
-            "message": "No recommendations found. Lower the thresholds.",
+            "message": "No recommendations found. Lower thresholds.",
         }
-
-    valid_sort_fields = ["score", "lift", "confidence", "support"]
-    if sort_by not in valid_sort_fields:
-        sort_by = "score"
 
     ascending = order == "asc"
     matched_rules = matched_rules.sort_values(by=sort_by, ascending=ascending)
@@ -223,19 +227,18 @@ def recommend(
                     "confidence": round(float(row["confidence"]), 4),
                     "lift": round(float(row["lift"]), 4),
                     "score": round(float(row["score"]), 4),
-                    "why": f"{item} is frequently bought together with {exact_match}.",
+                    "why": f"{item} is frequently bought with {exact_match}.",
                 })
 
             if len(recommendations) >= limit:
                 break
-
         if len(recommendations) >= limit:
             break
 
     return {
         "input_product": exact_match,
         "recommendations": recommendations,
-        "message": "Recommendations generated successfully." if recommendations else "No recommendations found.",
+        "message": "Success" if recommendations else "No recommendations found.",
     }
 
 
@@ -251,7 +254,6 @@ def rules_visualization(
     min_support: float = 0.001,
 ):
     if rules_df.empty:
-        build_rules_once()
         return {"rules": []}
 
     df = rules_df[
@@ -270,8 +272,8 @@ def rules_visualization(
 
     return {"rules": result}
 
-import os
 
+# ✅ Render entry
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     import uvicorn
