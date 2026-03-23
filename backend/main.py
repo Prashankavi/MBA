@@ -152,6 +152,7 @@ def recommend(
     order: str = "desc",
 ):
     if rules_df.empty:
+        build_rules_once()
         return {
             "input_product": product,
             "recommendations": [],
