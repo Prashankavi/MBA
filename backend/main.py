@@ -21,7 +21,7 @@ def load_transactions():
     if not DATA_PATH.exists():
         raise FileNotFoundError(f"Dataset not found: {DATA_PATH}")
 
-    df = pd.read_csv(DATA_PATH)
+    df = pd.read_csv(DATA_PATH).head(30000)
     df.columns = [col.strip() for col in df.columns]
 
     required_cols = ["Member_number", "Date", "itemDescription"]
@@ -101,8 +101,7 @@ def build_rules_once():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    load_transactions()
-    build_rules_once()
+    load_transactions() 
     yield
 
 
@@ -251,6 +250,7 @@ def rules_visualization(
     min_support: float = 0.001,
 ):
     if rules_df.empty:
+        build_rules_once()
         return {"rules": []}
 
     df = rules_df[
