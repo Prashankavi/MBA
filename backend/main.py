@@ -21,7 +21,7 @@ def load_transactions():
     if not DATA_PATH.exists():
         raise FileNotFoundError(f"Dataset not found: {DATA_PATH}")
 
-    df = pd.read_csv(DATA_PATH).head(2000)
+    df = pd.read_csv(DATA_PATH)
     df.columns = [col.strip() for col in df.columns]
 
     required_cols = ["Member_number", "Date", "itemDescription"]
